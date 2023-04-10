@@ -38,3 +38,41 @@ export const base64ToFile = async (
     return new File(byteArrays, 'certifica', {type: contentType});
 };
 
+export const round = (num, decimal = 2) => {
+    if (decimal <= 0 || num === undefined) return NaN;
+    const divider = Number(`1${Array.from({ length: decimal }, () => '0').join('')}`);
+
+    return Math.round((num + Number.EPSILON) * divider) / divider;
+};
+
+export const formatFileSize = (size) => {
+    if (size > 1024 * 1024 * 1024)
+        return {
+            originalSize: size,
+            formattedSize: `${round(size / (1024 * 1024 * 1024), 2)} GB`,
+        };
+    if (size > 1024 * 1024)
+        return {
+            originalSize: size,
+            formattedSize: `${round(size / (1024 * 1024), 2)} MB`,
+        };
+    if (size > 1024)
+        return {
+            originalSize: size,
+            formattedSize: `${round(size / 1024, 2)} KB`,
+        };
+
+    return {
+        originalSize: size,
+        formattedSize: `${round(size, 2)} Bytes`,
+    };
+};
+
+export function keyDownA11y(handler) {
+    return function onKeyDown(event) {
+        if (['keydown', 'keypress'].includes(event.type) && ['Enter', ' '].includes(event.key)) {
+            handler(event);
+        }
+    };
+}
+
